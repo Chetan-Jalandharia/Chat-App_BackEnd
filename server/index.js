@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { SetUserStatus, SetUserOffline } = require('./Apis/Users/UserController')
+const { SetUserStatus, SetUserOffline, getSocket } = require('./Apis/Users/UserController')
 // app initialization
 const express = require("express");
 const cors = require('cors')
@@ -37,22 +37,25 @@ app.use("/api/conversation", conversationRoute)
 // Socket Event Emitters for data transmision
 io.on("connection", (socket) => {
     console.log("User Connected With id: ", socket.id);
-    // users.push(socket.id)
-    // socket.on("send", (data) => {
-    //     // users.push(data)
-    //     console.log(data);
-    //     // io.to(users[0].socket).emit("receive", "hello")
-    // })
+   
     socket.on("setStatus", (data) => {
-        // console.log(data);
         SetUserStatus(data)
         io.emit("statusUpdate", { online: true })
+    })
+    
+    socket.on("sendMessage", async (data) => {
+        data.createdAt = Date.now()
+        const receiver_socket = await getSocket(data?.receiverId)
+        console.log("retun data:", receiver_socket)
+
+        io.to(receiver_socket).emit("receiveNewMessage", data)
     })
 
     socket.on("disconnect", () => {
         console.log("diconnected", socket.id);
         SetUserOffline(socket.id)
         io.emit("statusUpdate", { online: false })
+
     })
 });
 

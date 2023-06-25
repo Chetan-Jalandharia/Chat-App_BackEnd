@@ -33,7 +33,7 @@ exports.Register = async (req, res) => {
             res.status(400).json({
                 success: false,
                 status: 400,
-                message: "Invalid Data Format"            
+                message: "Invalid Data Format"
             })
         }
         User.findOne({ email: email }).then(val => {
@@ -175,6 +175,17 @@ exports.SearchUser = (req, res) => {
             })
         })
 }
+const SearchUserById=async(id)=>{
+  
+    try {
+        const val=await User.findOne({ _id: id })
+        console.log(val.socketId);
+        return val?.socketId
+        
+    } catch (error) {
+        console.log("error Occurs:",error);
+    }
+}
 
 exports.SetUserStatus = (data) => {
     const { userId, socketId } = data;
@@ -186,10 +197,10 @@ exports.SetUserStatus = (data) => {
                 val.isOnline = true
                 val.socketId = socketId
                 val.save()
-                // .then(val=>{
-                //     console.log(val);
-                // })
 
+
+            }).catch(err => {
+                console.log("error occurs : ", err);
             })
     } catch (error) {
         console.log(error);
@@ -198,20 +209,21 @@ exports.SetUserStatus = (data) => {
 }
 exports.SetUserOffline = (id) => {
     try {
-
-
         User.findOne({ socketId: id })
             .then(val => {
-                if (val) {
-                    // console.log(val);
-                    val.isOnline = !val.isOnline
-                    val.socketId = ""
-                    val.save()
-                }
+                // console.log(val);
+                val.isOnline = false
+                val.socketId = ""
+                val.save()
 
             })
+            .catch(err => {
+                console.log("error occurs : ", err);
+            })
     } catch (error) {
-        console.log(error);
-    }
+        console.log("error occurs in setUserOffline fun() : ", error);
 
+    }
 }
+
+exports.getSocket=SearchUserById;

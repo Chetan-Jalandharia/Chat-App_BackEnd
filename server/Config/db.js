@@ -8,5 +8,5 @@ mongoose.connect(dbpath)
         console.log("DataBase Connected");
     })
     .catch((err) => {
-        console.log(err);
+        console.log("Error occurs DB: ",err);
     })
