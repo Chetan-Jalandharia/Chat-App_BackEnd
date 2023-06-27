@@ -23,6 +23,12 @@ const io = require("socket.io")(httpServer, {
     }
 });
 
+app.get("/",(req,res)=>{
+    res.status(200).json({
+        success:true,
+        message:"Welcome to server"
+    })
+})
 
 const userRoute = require('./Routes/UserRoutes')
 const messageRoute = require('./Routes/MessageRoutes')
