@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { SetUserStatus, SetUserOffline, getSocket, ShowUsers, Login } = require('./Apis/Users/UserController')
+const { SetUserStatus, SetUserOffline, getSocket } = require('./Apis/Users/UserController')
 // app initialization
 const { createServer } = require('http')
 const { Server } = require("socket.io")
