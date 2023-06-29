@@ -1,33 +1,49 @@
 require("dotenv").config();
 const { SetUserStatus, SetUserOffline, getSocket } = require('./Apis/Users/UserController')
 // app initialization
+const { createServer } = require('http')
+const { Server } = require("socket.io")
 const express = require("express");
 const cors = require('cors')
 const app = express()
 
 // database initializaion
 const db = require('./Config/db')
+const corsOpts = {
+    origin: '*',
+
+    methods: [
+        'GET',
+        'POST',
+    ],
+
+    allowedHeaders: [
+        'Content-Type',
+    ],
+};
 
 //middelware initialization
-app.use(cors())
+app.use(cors(corsOpts))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // initialize http server for web socket
-const httpServer = require("http").createServer(app);
+const httpServer = createServer(app);
 
 // Web Socket server initialization
-const io = require("socket.io")(httpServer, {
+const io = new Server(httpServer, {
     cors: {
-        // origin: "http://127.0.0.1:5173",//used to allow connection with given domain
-        origin: '*',
+        origin: "*",//used to allow connection with given domain
+        methods: ['GET', 'POST'],
+        credentials: true
     }
 });
 
-app.get("/",(req,res)=>{
+
+app.get("/", (req, res) => {
     res.status(200).json({
-        success:true,
-        message:"Welcome to server"
+        success: true,
+        message: "Welcome to server"
     })
 })
 
@@ -44,12 +60,12 @@ app.use("/api/conversation", conversationRoute)
 // Socket Event Emitters for data transmision
 io.on("connection", (socket) => {
     console.log("User Connected With id: ", socket.id);
-   
+
     socket.on("setStatus", (data) => {
         SetUserStatus(data)
         io.emit("statusUpdate", { online: true })
     })
-    
+
     socket.on("sendMessage", async (data) => {
         data.createdAt = Date.now()
         const receiver_socket = await getSocket(data?.receiverId)
