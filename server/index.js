@@ -21,6 +21,8 @@ const db = require('./Config/db')
 //         'Content-Type',
 //     ],
 // };
+// initialize http server for web socket
+const httpServer = createServer(app);
 
 //middelware initialization
 app.use(cors())
@@ -36,15 +38,13 @@ app.use((req, res, next) => {
     next();
 });
 
-// initialize http server for web socket
-const httpServer = createServer(app);
 
 // Web Socket server initialization
 const io = new Server(httpServer, {
     cors: {
         origin: "*",//used to allow connection with given domain
-        methods: ['GET', 'POST'],
-        credentials: true
+        // methods: ['GET', 'POST'],
+        // credentials: true
     }
 });
 
@@ -53,6 +53,19 @@ app.get("/", (req, res) => {
     res.status(200).json({
         success: true,
         message: "Welcome to server"
+    })
+})
+app.get("/show", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "it works"
+    })
+})
+app.post("/showall", (req, res) => {
+    const name = req.body.name
+    res.status(200).json({
+        success: true,
+        message: "it works" + name
     })
 })
 
