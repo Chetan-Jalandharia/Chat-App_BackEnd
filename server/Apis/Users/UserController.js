@@ -72,9 +72,9 @@ exports.Register = async (req, res) => {
 }
 
 exports.Login = (req, res) => {
-    res.status(200).json({
-        message:"it works"
-    })
+    // res.status(200).json({
+    //     message:"it works"
+    // })
     const { email, password } = req.body
     try {
         User.findOne({ email: email })
