@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { SetUserStatus, SetUserOffline, getSocket, ShowUsers } = require('./Apis/Users/UserController')
+const { SetUserStatus, SetUserOffline, getSocket, ShowUsers, Login } = require('./Apis/Users/UserController')
 // app initialization
 const { createServer } = require('http')
 const { Server } = require("socket.io")
@@ -24,18 +24,20 @@ const db = require('./Config/db')
 
 
 //middelware initialization
-app.use(cors())
+app.use(cors({
+    origin: "*"
+}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    );
-    next();
-});
+// app.use((req, res, next) => {
+//     res.setHeader("Access-Control-Allow-Origin", "*");
+//     res.header(
+//         "Access-Control-Allow-Headers",
+//         "Origin, X-Requested-With, Content-Type, Accept"
+//     );
+//     next();
+// });
 
 const userRoute = require('./Routes/UserRoutes')
 const messageRoute = require('./Routes/MessageRoutes')
@@ -66,13 +68,7 @@ app.get("/", (req, res) => {
 })
 app.get("/show", ShowUsers)
 
-app.post("/showall", (req, res) => {
-    const name = req.body.name
-    res.status(200).json({
-        success: true,
-        message: "it works" + name
-    })
-})
+app.post("/login", Login)
 
 
 
