@@ -2,7 +2,7 @@ require("dotenv").config();
 const { SetUserStatus, SetUserOffline, getSocket } = require('./Apis/Users/UserController')
 // app initialization
 // const { createServer } = require('http')
-// const { Server } = require("socket.io")
+const { Server } = require("socket.io")
 const express = require("express");
 const cors = require('cors')
 const app = express()
@@ -41,8 +41,8 @@ app.use("/api/conversation", conversationRoute)
 const server=app.listen(process.env.PORT || 5000)
 // const httpServer = createServer(app);
 // Web Socket server initialization
-// const io = new Server(httpServer, { cors: { origin: "*" } });
-const io = require('socket.io').listen(server);
+const io = new Server(server, { cors: { origin: "*" } });
+// const io = require('socket.io').listen(server);
 
 app.get("/", (req, res) => {
     res.status(200).json({
