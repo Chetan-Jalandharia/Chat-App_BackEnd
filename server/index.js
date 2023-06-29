@@ -27,6 +27,12 @@ app.use(cors(corsOpts))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 // initialize http server for web socket
 const httpServer = createServer(app);
 
@@ -37,12 +43,6 @@ const io = new Server(httpServer, {
         methods: ['GET', 'POST'],
         credentials: true
     }
-});
-
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    next();
 });
 
 
