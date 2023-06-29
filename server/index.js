@@ -22,24 +22,16 @@ const corsOpts = {
     ],
 };
 
+const userRoute = require('./Routes/UserRoutes')
+const messageRoute = require('./Routes/MessageRoutes')
+const conversationRoute = require('./Routes/ConversationRoutes')
+
 
 //middelware initialization
 app.use(cors(corsOpts))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// app.use((req, res, next) => {
-//     res.setHeader("Access-Control-Allow-Origin", "*");
-//     res.header(
-//         "Access-Control-Allow-Headers",
-//         "Origin, X-Requested-With, Content-Type, Accept"
-//     );
-//     next();
-// });
-
-const userRoute = require('./Routes/UserRoutes')
-const messageRoute = require('./Routes/MessageRoutes')
-const conversationRoute = require('./Routes/ConversationRoutes')
 
 app.use("/api/user", userRoute)
 app.use("/api/message", messageRoute)
@@ -64,9 +56,6 @@ app.get("/", (req, res) => {
         message: "Welcome to server"
     })
 })
-app.get("/show", ShowUsers)
-
-app.post("/login", Login)
 
 
 
