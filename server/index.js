@@ -19,7 +19,8 @@ const httpServer = require("http").createServer(app);
 // Web Socket server initialization
 const io = require("socket.io")(httpServer, {
     cors: {
-        origin: "http://127.0.0.1:5173",//used to allow connection with given domain
+        // origin: "http://127.0.0.1:5173",//used to allow connection with given domain
+        origin: '*',
     }
 });
 
