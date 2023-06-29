@@ -41,13 +41,7 @@ app.use("/api/conversation", conversationRoute)
 
 const httpServer = createServer(app);
 // Web Socket server initialization
-const io = new Server(httpServer, {
-    cors: {
-        origin: "*",//used to allow connection with given domain
-        // methods: ['GET', 'POST'],
-        // credentials: true
-    }
-});
+const io = new Server(httpServer, { cors: { origin: "*" } });
 
 
 app.get("/", (req, res) => {
