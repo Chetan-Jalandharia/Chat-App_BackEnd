@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { SetUserStatus, SetUserOffline, getSocket } = require('./Apis/Users/UserController')
+const { SetUserStatus, SetUserOffline, getSocket, ShowUsers } = require('./Apis/Users/UserController')
 // app initialization
 const { createServer } = require('http')
 const { Server } = require("socket.io")
@@ -21,8 +21,7 @@ const db = require('./Config/db')
 //         'Content-Type',
 //     ],
 // };
-// initialize http server for web socket
-const httpServer = createServer(app);
+
 
 //middelware initialization
 app.use(cors())
@@ -38,7 +37,17 @@ app.use((req, res, next) => {
     next();
 });
 
+const userRoute = require('./Routes/UserRoutes')
+const messageRoute = require('./Routes/MessageRoutes')
+const conversationRoute = require('./Routes/ConversationRoutes')
 
+app.use("/api/user", userRoute)
+app.use("/api/message", messageRoute)
+app.use("/api/conversation", conversationRoute)
+
+
+
+const httpServer = createServer(app);
 // Web Socket server initialization
 const io = new Server(httpServer, {
     cors: {
@@ -55,12 +64,8 @@ app.get("/", (req, res) => {
         message: "Welcome to server"
     })
 })
-app.get("/show", (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: "it works"
-    })
-})
+app.get("/show", ShowUsers)
+
 app.post("/showall", (req, res) => {
     const name = req.body.name
     res.status(200).json({
@@ -68,14 +73,6 @@ app.post("/showall", (req, res) => {
         message: "it works" + name
     })
 })
-
-const userRoute = require('./Routes/UserRoutes')
-const messageRoute = require('./Routes/MessageRoutes')
-const conversationRoute = require('./Routes/ConversationRoutes')
-
-app.use("/api/user", userRoute)
-app.use("/api/message", messageRoute)
-app.use("/api/conversation", conversationRoute)
 
 
 
